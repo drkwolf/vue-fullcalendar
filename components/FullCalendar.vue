@@ -68,6 +68,11 @@
                 },
             },
         },
+        data() {
+            return {
+                prevClick: undefined,
+            }
+        },
 
         computed: {
             defaultConfig() {
@@ -97,7 +102,18 @@
                     },
 
                     eventClick(...args) {
-                        self.$emit('event-selected', ...args)
+                        let old = null
+                        if (!self.prevClick) {
+                            self.prevClick = this
+                        } else {
+                            if ( $.data(self.prevClick) == $.data(this)) {
+                                old = null
+                            } else {
+                                old = self.prevClick
+                                self.prevClick = this
+                            }
+                        }
+                        self.$emit('event-selected', ...args, this, old)
                     },
 
                     eventDrop(...args) {
